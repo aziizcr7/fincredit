@@ -1,0 +1,25 @@
+<div class="auth-page">
+  <div class="auth-bg"><div class="bg-orb orb1"></div><div class="bg-orb orb2"></div></div>
+  <div class="auth-card">
+    <div class="brand">
+      <div class="brand-mark">FC</div>
+      <span class="brand-name">Fin<em>Credit</em> Pro</span>
+    </div>
+    <h1>Créer un compte</h1>
+    <p class="sub">Rejoignez la plateforme bancaire en quelques secondes</p>
+    <div class="err" *ngIf="errorMsg">⚠ {{ errorMsg }}</div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="fg"><label>Nom complet *</label><input formControlName="name" type="text" placeholder="Mohamed Ben Ali"></div>
+      <div class="fg"><label>Email *</label><input formControlName="email" type="email" placeholder="votre@email.com"></div>
+      <div class="fg"><label>Téléphone</label><input formControlName="phone" type="tel" placeholder="+216 xx xxx xxx"></div>
+      <div class="fg"><label>Mot de passe *</label><input formControlName="password" type="password" placeholder="Min. 8 caractères"></div>
+      <div class="fg"><label>Confirmer *</label><input formControlName="confirm" type="password" placeholder="Répéter le mot de passe"></div>
+      <div class="mismatch" *ngIf="form.errors?.['mismatch'] && form.get('confirm')?.touched">Les mots de passe ne correspondent pas</div>
+      <button type="submit" class="submit-btn" [disabled]="form.invalid||loading">
+        <span *ngIf="!loading">Créer mon compte →</span>
+        <span class="spin" *ngIf="loading"></span>
+      </button>
+    </form>
+    <p class="switch">Déjà un compte ? <a routerLink="/login">Se connecter</a></p>
+  </div>
+</div>

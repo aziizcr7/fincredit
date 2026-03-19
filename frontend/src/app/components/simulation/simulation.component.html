@@ -1,0 +1,107 @@
+<div class="page-header">
+  <div>
+    <div class="page-title">Simulateur de <span>crédit</span></div>
+    <div class="page-sub">Calculez votre mensualité et visualisez le tableau d'amortissement</div>
+  </div>
+  <a routerLink="/request" class="btn btn-primary">📄 Demander ce crédit</a>
+</div>
+
+<div class="sim-grid">
+  <!-- PARAMS -->
+  <div class="card">
+    <div class="card-title"><div class="card-dot"></div>Paramètres du crédit</div>
+    <form [formGroup]="form">
+      <div class="field-block">
+        <label class="form-label">Type de crédit</label>
+        <select formControlName="credit_type" class="form-input">
+          <option>Immobilier</option>
+          <option>Auto</option>
+          <option>Personnel</option>
+          <option>Professionnel</option>
+        </select>
+      </div>
+
+      <div class="field-block">
+        <div class="range-header">
+          <label class="form-label">Montant du crédit</label>
+          <span class="range-val">{{ form.value.amount | number:'1.0-0' }} TND</span>
+        </div>
+        <input type="range" formControlName="amount" min="1000" max="500000" step="1000">
+        <div class="range-labels"><span>1 000 TND</span><span>500 000 TND</span></div>
+      </div>
+
+      <div class="field-block">
+        <div class="range-header">
+          <label class="form-label">Durée</label>
+          <span class="range-val">{{ form.value.duration_months }} mois ({{ durationYears }})</span>
+        </div>
+        <input type="range" formControlName="duration_months" min="6" max="240" step="6">
+        <div class="range-labels"><span>6 mois</span><span>240 mois</span></div>
+      </div>
+
+      <div class="field-block">
+        <div class="range-header">
+          <label class="form-label">Taux d'intérêt annuel</label>
+          <span class="range-val">{{ form.value.interest_rate | number:'1.2-2' }}%</span>
+        </div>
+        <input type="range" formControlName="interest_rate" min="0.5" max="25" step="0.25">
+        <div class="range-labels"><span>0.5%</span><span>25%</span></div>
+      </div>
+
+      <div class="field-block">
+        <label class="form-label">Assurance mensuelle (TND)</label>
+        <input formControlName="insurance_monthly" type="number" class="form-input" placeholder="Ex: 20 TND" min="0">
+      </div>
+    </form>
+  </div>
+
+  <!-- RESULTS -->
+  <div>
+    <div class="card mb-20">
+      <div class="card-title"><div class="card-dot"></div>Résultats de simulation</div>
+      <div *ngIf="loading" class="loading-wrap" style="padding:30px"><div class="spinner-lg"></div></div>
+      <div *ngIf="result && !loading">
+        <div class="result-grid">
+          <div class="result-card">
+            <div class="res-label">Mensualité</div>
+            <div class="res-value cyan">{{ result.monthly_with_insurance | number:'1.0-0' }} TND</div>
+          </div>
+          <div class="result-card">
+            <div class="res-label">Coût total</div>
+            <div class="res-value">{{ result.total_cost | number:'1.0-0' }} TND</div>
+          </div>
+          <div class="result-card">
+            <div class="res-label">Intérêts totaux</div>
+            <div class="res-value blue">{{ result.total_interest | number:'1.0-0' }} TND</div>
+          </div>
+        </div>
+        <div style="height:200px;position:relative;margin-top:16px">
+          <canvas id="amortChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- AMORT TABLE -->
+    <div class="card" *ngIf="result">
+      <div class="card-title"><div class="card-dot"></div>Tableau d'amortissement</div>
+      <div style="max-height:280px;overflow-y:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Mois</th><th>Mensualité</th><th>Capital</th><th>Intérêts</th><th>Restant dû</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of result.schedule">
+              <td>{{ row.month }}</td>
+              <td style="color:var(--white);font-weight:500">{{ row.monthly_payment | number:'1.2-2' }}</td>
+              <td style="color:var(--success)">{{ row.capital | number:'1.2-2' }}</td>
+              <td style="color:var(--warning)">{{ row.interest | number:'1.2-2' }}</td>
+              <td>{{ row.remaining | number:'1.0-0' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

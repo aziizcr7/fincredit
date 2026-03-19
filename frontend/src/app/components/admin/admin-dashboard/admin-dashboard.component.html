@@ -1,0 +1,76 @@
+<div class="page-header">
+  <div>
+    <div class="page-title">Dashboard <span>Admin</span></div>
+    <div class="page-sub">Vue d'ensemble de la plateforme FinCredit Pro</div>
+  </div>
+  <a routerLink="/admin/requests" class="btn btn-primary">📋 Gérer les demandes</a>
+</div>
+
+<div *ngIf="loading" class="loading-wrap"><div class="spinner-lg"></div></div>
+
+<div *ngIf="!loading && stats">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Demandes totales</div>
+      <div class="stat-value">{{ stats.total }}</div>
+      <div class="stat-change" style="color:var(--silver)">Depuis le début</div>
+      <div class="stat-icon">📋</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">En attente</div>
+      <div class="stat-value" style="color:var(--warning)">{{ stats.pending }}</div>
+      <div class="stat-change" style="color:var(--warning)">⏳ À traiter</div>
+      <div class="stat-icon">⏳</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Montant total accordé</div>
+      <div class="stat-value" style="font-size:20px">{{ stats.total_amount | number:'1.0-0' }}</div>
+      <div class="stat-change" style="color:var(--silver)">TND</div>
+      <div class="stat-icon">💰</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Taux d'approbation</div>
+      <div class="stat-value" style="color:var(--success)">{{ stats.approval_rate }}%</div>
+      <div class="stat-change" style="color:var(--success)">↑ Bon niveau</div>
+      <div class="stat-icon">📈</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title"><div class="card-dot"></div>Statuts des demandes</div>
+      <div style="height:220px;position:relative"><canvas id="chartStatus"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="card-dot"></div>Demandes par type</div>
+      <div style="height:220px;position:relative"><canvas id="chartByType"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card mb-20">
+    <div class="card-title"><div class="card-dot"></div>Tendance mensuelle (6 derniers mois)</div>
+    <div style="height:240px;position:relative"><canvas id="chartTrend"></canvas></div>
+  </div>
+
+  <!-- STATS SUMMARY -->
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title"><div class="card-dot"></div>Métriques financières</div>
+      <div class="metric-row"><span>Montant moyen accordé</span><span class="metric-val">{{ stats.avg_amount | number:'1.0-0' }} TND</span></div>
+      <div class="metric-row"><span>Durée moyenne</span><span class="metric-val">{{ stats.avg_duration | number:'1.0-0' }} mois</span></div>
+      <div class="metric-row"><span>Demandes approuvées</span><span class="metric-val" style="color:var(--success)">{{ stats.approved }}</span></div>
+      <div class="metric-row"><span>Demandes refusées</span><span class="metric-val" style="color:var(--danger)">{{ stats.rejected }}</span></div>
+      <div class="metric-row"><span>Clients actifs</span><span class="metric-val">{{ stats.total_clients }}</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="card-dot"></div>Répartition par type</div>
+      <div *ngFor="let t of stats.by_type" class="type-row">
+        <span>{{ t.credit_type }}</span>
+        <div class="type-bar-wrap">
+          <div class="type-bar" [style.width.%]="stats.total > 0 ? (+t.count / stats.total * 100) : 0"></div>
+        </div>
+        <span class="type-count">{{ t.count }}</span>
+      </div>
+    </div>
+  </div>
+</div>

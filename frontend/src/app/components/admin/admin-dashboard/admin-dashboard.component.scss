@@ -1,0 +1,6 @@
+.metric-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid rgba(27,79,216,0.07); font-size: 13px; &:last-child { border-bottom: none; } span:first-child { color: var(--silver-lt); } }
+.metric-val { font-weight: 600; font-size: 14px; }
+.type-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(27,79,216,0.07); font-size: 13px; &:last-child { border-bottom: none; } span:first-child { min-width: 100px; color: var(--silver-lt); } }
+.type-bar-wrap { flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.type-bar { height: 100%; background: linear-gradient(90deg, var(--blue), var(--cyan)); border-radius: 3px; transition: width 0.5s ease; }
+.type-count { font-weight: 700; font-size: 13px; min-width: 24px; text-align: right; }

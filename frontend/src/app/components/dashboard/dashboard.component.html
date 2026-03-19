@@ -1,0 +1,103 @@
+<div *ngIf="loading" class="loading-wrap"><div class="spinner-lg"></div></div>
+
+<div *ngIf="!loading">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Bonjour, <span>{{ user()?.name?.split(' ')?.[0] }}</span> 👋</div>
+      <div class="page-sub">Voici un aperçu de votre situation financière</div>
+    </div>
+    <a routerLink="/simulator" class="btn btn-primary">+ Simuler un crédit</a>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Crédits actifs</div>
+      <div class="stat-value">{{ activeCredits }}</div>
+      <div class="stat-change" style="color:var(--success)">↑ En cours</div>
+      <div class="stat-icon">💳</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Montant total</div>
+      <div class="stat-value" style="font-size:22px">{{ totalAmount | number:'1.0-0' }} TND</div>
+      <div class="stat-change" style="color:var(--silver)">Engagé</div>
+      <div class="stat-icon">💰</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Mensualité totale</div>
+      <div class="stat-value" style="font-size:22px;color:var(--cyan)">{{ totalMonthly | number:'1.0-0' }} TND</div>
+      <div class="stat-change" style="color:var(--warning)">📅 Ce mois</div>
+      <div class="stat-icon">📅</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Demandes en cours</div>
+      <div class="stat-value" style="color:var(--warning)">{{ pendingCount }}</div>
+      <div class="stat-change" style="color:var(--silver)">En attente</div>
+      <div class="stat-icon">⏳</div>
+    </div>
+  </div>
+
+  <!-- CHART + NOTIF -->
+  <div class="three-col">
+    <div class="card">
+      <div class="card-title"><div class="card-dot"></div>Évolution des remboursements</div>
+      <div style="height:220px; position:relative">
+        <canvas id="dashChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="card-dot"></div>Activité récente</div>
+      <div *ngIf="notifications.length === 0" style="color:var(--silver);font-size:13px;text-align:center;padding:20px 0">Aucune notification</div>
+      <div class="notif-list">
+        <div class="notif-item" *ngFor="let n of notifications.slice(0,4)">
+          <div class="notif-icon" [ngClass]="'notif-'+n.type">
+            {{ n.type === 'success' ? '✅' : n.type === 'warning' ? '⚠️' : n.type === 'danger' ? '❌' : 'ℹ️' }}
+          </div>
+          <div>
+            <div class="notif-text"><strong>{{ n.title }}</strong></div>
+            <div style="font-size:11px;color:var(--silver);margin-top:2px">{{ n.created_at | date:'dd/MM/yyyy HH:mm' }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREDITS LIST -->
+  <div class="card mb-20" *ngIf="credits.length > 0">
+    <div class="card-title"><div class="card-dot"></div>Mes crédits actifs</div>
+    <div class="credit-row" *ngFor="let c of credits">
+      <div class="credit-left">
+        <div class="credit-icon">{{ c.credit_type === 'Immobilier' ? '🏠' : c.credit_type === 'Auto' ? '🚗' : c.credit_type === 'Personnel' ? '💼' : '🏪' }}</div>
+        <div>
+          <div style="font-weight:500;font-size:14px">Crédit {{ c.credit_type }}</div>
+          <div style="font-size:12px;color:var(--silver)">{{ c.amount | number:'1.0-0' }} TND — {{ c.duration_months }} mois — {{ c.interest_rate }}% / an</div>
+        </div>
+      </div>
+      <div class="credit-right">
+        <div class="credit-stat">
+          <div style="font-size:11px;color:var(--silver)">Restant</div>
+          <div style="font-weight:600;font-size:14px">{{ c.remaining_amount | number:'1.0-0' }} TND</div>
+        </div>
+        <div class="credit-stat">
+          <div style="font-size:11px;color:var(--silver)">Mensualité</div>
+          <div style="font-weight:600;font-size:14px;color:var(--cyan)">{{ c.monthly_payment | number:'1.0-0' }} TND</div>
+        </div>
+        <div class="credit-stat" style="min-width:140px">
+          <div style="font-size:11px;color:var(--silver);margin-bottom:6px">Progression {{ progressPct(c) }}%</div>
+          <div class="progress-bar"><div class="progress-fill" [style.width.%]="progressPct(c)"></div></div>
+        </div>
+        <span class="badge badge-approved"><span class="dot"></span>Actif</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="card" *ngIf="credits.length === 0">
+    <div style="text-align:center;padding:40px 0">
+      <div style="font-size:48px;margin-bottom:16px">💳</div>
+      <div style="font-size:16px;font-weight:600;margin-bottom:8px">Aucun crédit actif</div>
+      <div style="font-size:14px;color:var(--silver);margin-bottom:20px">Simulez et demandez votre premier crédit</div>
+      <a routerLink="/simulator" class="btn btn-primary">Simuler un crédit</a>
+    </div>
+  </div>
+</div>

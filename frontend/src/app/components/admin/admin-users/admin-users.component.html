@@ -1,0 +1,48 @@
+<div class="page-header">
+  <div>
+    <div class="page-title">Gestion des <span>utilisateurs</span></div>
+    <div class="page-sub">{{ users.length }} utilisateurs inscrits</div>
+  </div>
+</div>
+
+<div style="margin-bottom:16px">
+  <input [(ngModel)]="search" (ngModelChange)="onSearch()" class="form-input" style="max-width:320px" placeholder="🔍 Rechercher...">
+</div>
+
+<div *ngIf="loading" class="loading-wrap"><div class="spinner-lg"></div></div>
+
+<div class="card" *ngIf="!loading">
+  <table class="data-table">
+    <thead>
+      <tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Profession</th><th>Revenu</th><th>Score</th><th>Crédits</th><th>Inscrit le</th><th>Statut</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let u of filtered">
+        <td style="font-weight:500;color:var(--white)">{{ u.name }}</td>
+        <td style="color:var(--silver)">{{ u.email }}</td>
+        <td>
+          <span class="badge" [class]="u.role === 'admin' ? 'badge-danger' : 'badge-approved'">
+            <span class="dot"></span>{{ u.role }}
+          </span>
+        </td>
+        <td style="color:var(--silver)">{{ u.profession || '—' }}</td>
+        <td>{{ u.income ? (u.income | number:'1.0-0') + ' TND' : '—' }}</td>
+        <td [style.color]="u.credit_score >= 700 ? 'var(--success)' : 'var(--warning)'">
+          <strong>{{ u.credit_score || '—' }}</strong>
+        </td>
+        <td>{{ u.active_credits }} actif(s)</td>
+        <td style="color:var(--silver)">{{ u.created_at | date:'dd/MM/yyyy' }}</td>
+        <td>
+          <span class="badge" [class]="u.is_active ? 'badge-approved' : 'badge-rejected'">
+            <span class="dot"></span>{{ u.is_active ? 'Actif' : 'Bloqué' }}
+          </span>
+        </td>
+        <td>
+          <button *ngIf="u.role !== 'admin'" class="btn btn-ghost" style="padding:5px 12px;font-size:12px" (click)="toggle(u.id)">
+            {{ u.is_active ? '🔒 Bloquer' : '🔓 Activer' }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

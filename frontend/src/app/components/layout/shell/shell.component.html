@@ -1,0 +1,73 @@
+<div class="app-shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" [class.collapsed]="!sidebarOpen">
+    <div class="sidebar-logo">
+      <div class="logo-mark">FC</div>
+      <div class="logo-text" *ngIf="sidebarOpen">Fin<span>Credit</span> Pro</div>
+    </div>
+
+    <!-- CLIENT NAV -->
+    <nav *ngIf="!isAdmin()">
+      <div class="nav-label">Menu principal</div>
+      <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
+        <span class="nav-icon">📊</span><span *ngIf="sidebarOpen">Dashboard</span>
+      </a>
+      <a class="nav-item" routerLink="/simulator" routerLinkActive="active">
+        <span class="nav-icon">🔢</span><span *ngIf="sidebarOpen">Simulateur</span>
+      </a>
+      <a class="nav-item" routerLink="/request" routerLinkActive="active">
+        <span class="nav-icon">📄</span><span *ngIf="sidebarOpen">Demande de crédit</span>
+      </a>
+      <a class="nav-item" routerLink="/my-credits" routerLinkActive="active">
+        <span class="nav-icon">💳</span><span *ngIf="sidebarOpen">Mes crédits</span>
+      </a>
+      <div class="nav-label" *ngIf="sidebarOpen">Compte</div>
+      <a class="nav-item" routerLink="/notifications" routerLinkActive="active">
+        <span class="nav-icon">🔔</span>
+        <span *ngIf="sidebarOpen">Notifications</span>
+        <span class="notif-badge" *ngIf="unreadCount > 0 && sidebarOpen">{{ unreadCount }}</span>
+      </a>
+      <a class="nav-item" routerLink="/profile" routerLinkActive="active">
+        <span class="nav-icon">👤</span><span *ngIf="sidebarOpen">Mon profil</span>
+      </a>
+    </nav>
+
+    <!-- ADMIN NAV -->
+    <nav *ngIf="isAdmin()">
+      <div class="nav-label">Administration</div>
+      <a class="nav-item" routerLink="/admin/dashboard" routerLinkActive="active">
+        <span class="nav-icon">📊</span><span *ngIf="sidebarOpen">Dashboard</span>
+      </a>
+      <a class="nav-item" routerLink="/admin/requests" routerLinkActive="active">
+        <span class="nav-icon">📋</span><span *ngIf="sidebarOpen">Demandes</span>
+      </a>
+      <a class="nav-item" routerLink="/admin/users" routerLinkActive="active">
+        <span class="nav-icon">👥</span><span *ngIf="sidebarOpen">Utilisateurs</span>
+      </a>
+      <a class="nav-item" routerLink="/simulator" routerLinkActive="active">
+        <span class="nav-icon">🔢</span><span *ngIf="sidebarOpen">Simulateur</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar">{{ initials }}</div>
+        <div class="user-info" *ngIf="sidebarOpen">
+          <div class="user-name">{{ user()?.name }}</div>
+          <div class="user-role">{{ isAdmin() ? 'Administrateur' : 'Client' }}</div>
+        </div>
+        <button class="logout-btn" (click)="logout()" title="Déconnexion">⏏</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="topbar">
+      <button class="toggle-btn" (click)="sidebarOpen = !sidebarOpen">☰</button>
+    </div>
+    <div class="content-wrap">
+      <router-outlet />
+    </div>
+  </main>
+</div>

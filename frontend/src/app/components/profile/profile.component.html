@@ -1,0 +1,37 @@
+<div class="page-header">
+  <div>
+    <div class="page-title">Mon <span>profil</span></div>
+    <div class="page-sub">Gérez vos informations personnelles</div>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="card">
+    <div class="card-title"><div class="card-dot"></div>Informations du compte</div>
+    <div class="profile-header">
+      <div class="profile-avatar">{{ initials }}</div>
+      <div>
+        <div style="font-weight:600;font-size:16px">{{ user()?.name }}</div>
+        <div class="role-pill">{{ user()?.role === 'admin' ? 'Administrateur' : 'Client' }}</div>
+      </div>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="onSave()">
+      <div class="field-block"><label class="form-label">Nom complet</label><input formControlName="name" class="form-input"></div>
+      <div class="field-block"><label class="form-label">Téléphone</label><input formControlName="phone" class="form-input" placeholder="+216 xx xxx xxx"></div>
+      <div class="field-block"><label class="form-label">Adresse</label><input formControlName="address" class="form-input" placeholder="Ville, Pays"></div>
+      <div class="field-block"><label class="form-label">Profession</label><input formControlName="profession" class="form-input"></div>
+      <button type="submit" class="btn btn-primary" [disabled]="loading">
+        {{ loading ? 'Sauvegarde...' : '💾 Sauvegarder' }}
+      </button>
+      <div class="save-msg" *ngIf="saved">✅ Modifications sauvegardées !</div>
+    </form>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="card-dot"></div>Informations du compte</div>
+    <div class="info-row"><span class="ir-label">Email</span><span class="ir-val">{{ user()?.email }}</span></div>
+    <div class="info-row"><span class="ir-label">Rôle</span><span class="ir-val">{{ user()?.role === 'admin' ? 'Administrateur' : 'Client' }}</span></div>
+    <div class="info-row" *ngIf="user()?.credit_score"><span class="ir-label">Score crédit</span><span class="ir-val" style="color:var(--success);font-weight:700">{{ user()?.credit_score }}</span></div>
+    <div class="card-title" style="margin-top:24px"><div class="card-dot"></div>Sécurité</div>
+    <div class="security-note">Pour changer votre mot de passe, contactez votre agence bancaire ou utilisez la procédure de réinitialisation.</div>
+  </div>
+</div>

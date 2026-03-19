@@ -1,0 +1,9 @@
+.field-block { margin-bottom: 16px; }
+.profile-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; padding: 16px; background: rgba(27,79,216,0.08); border-radius: var(--radius-sm); }
+.profile-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--blue), var(--cyan)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
+.role-pill { display: inline-flex; background: rgba(0,200,255,0.1); color: var(--cyan); border: 1px solid rgba(0,200,255,0.2); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-top: 4px; }
+.save-msg { margin-top: 10px; color: var(--success); font-size: 13px; }
+.info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(27,79,216,0.07); &:last-of-type { border-bottom: none; } }
+.ir-label { font-size: 13px; color: var(--silver); }
+.ir-val   { font-size: 13px; font-weight: 500; }
+.security-note { font-size: 13px; color: var(--silver-lt); line-height: 1.5; background: rgba(255,181,71,0.06); border: 1px solid rgba(255,181,71,0.15); border-radius: 10px; padding: 14px; }

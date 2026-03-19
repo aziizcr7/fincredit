@@ -1,0 +1,78 @@
+<div class="page-header">
+  <div>
+    <div class="page-title">Gestion des <span>demandes</span></div>
+    <div class="page-sub">Validez ou refusez les demandes de crédit</div>
+  </div>
+</div>
+
+<div class="filters-bar">
+  <input [(ngModel)]="searchTerm" (ngModelChange)="load()" class="form-input search-input" placeholder="🔍 Rechercher un client...">
+  <select [(ngModel)]="statusFilter" (ngModelChange)="load()" class="form-input select-filter">
+    <option value="">Tous les statuts</option>
+    <option value="pending">En attente</option>
+    <option value="approved">Approuvées</option>
+    <option value="rejected">Refusées</option>
+  </select>
+</div>
+
+<div *ngIf="loading" class="loading-wrap"><div class="spinner-lg"></div></div>
+
+<div class="card" *ngIf="!loading">
+  <div *ngIf="requests.length === 0" style="text-align:center;padding:40px;color:var(--silver)">
+    Aucune demande trouvée
+  </div>
+
+  <div class="req-row" *ngFor="let r of requests">
+    <div class="req-ref">#{{ r.id.substring(0,8).toUpperCase() }}</div>
+    <div class="req-client">
+      <div class="req-name">{{ r.client_name }}</div>
+      <div class="req-email">{{ r.client_email }}</div>
+    </div>
+    <div class="req-type">{{ r.credit_type }}</div>
+    <div class="req-amount">
+      <div style="font-family:'Syne',sans-serif;font-weight:700">{{ r.amount | number:'1.0-0' }} TND</div>
+      <div style="font-size:12px;color:var(--silver)">{{ r.duration_months }} mois — {{ r.interest_rate }}%</div>
+    </div>
+    <div class="req-monthly" style="color:var(--cyan);font-weight:600">{{ r.monthly_payment | number:'1.0-0' }} TND/mois</div>
+    <div class="req-date" style="color:var(--silver);font-size:13px">{{ r.request_date | date:'dd/MM/yyyy' }}</div>
+    <div class="req-score" *ngIf="r.credit_score">
+      <div style="font-size:11px;color:var(--silver)">Score</div>
+      <div [style.color]="r.credit_score >= 700 ? 'var(--success)' : r.credit_score >= 600 ? 'var(--warning)' : 'var(--danger)'" style="font-weight:700">{{ r.credit_score }}</div>
+    </div>
+    <div>
+      <span class="badge" [ngClass]="'badge-'+r.status"><span class="dot"></span>{{ statusLabel(r.status) }}</span>
+    </div>
+    <div class="req-actions">
+      <ng-container *ngIf="r.status === 'pending'">
+        <button class="btn btn-success btn-sm" [disabled]="isProcessing(r.id)" (click)="approve(r.id)">
+          {{ isProcessing(r.id) ? '...' : '✓ Valider' }}
+        </button>
+        <button class="btn btn-danger btn-sm" [disabled]="isProcessing(r.id)" (click)="openReject(r.id)">
+          ✗ Refuser
+        </button>
+      </ng-container>
+      <span *ngIf="r.status !== 'pending'" style="color:var(--silver);font-size:13px">—</span>
+    </div>
+  </div>
+
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button (click)="setPage(currentPage-1)" [disabled]="currentPage===1" class="btn btn-ghost" style="padding:7px 14px;font-size:13px">← Préc.</button>
+    <span style="font-size:13px;color:var(--silver)">{{ currentPage }} / {{ totalPages }}</span>
+    <button (click)="setPage(currentPage+1)" [disabled]="currentPage===totalPages" class="btn btn-ghost" style="padding:7px 14px;font-size:13px">Suiv. →</button>
+  </div>
+</div>
+
+<!-- REJECT MODAL -->
+<div class="modal-backdrop" *ngIf="showRejectModal">
+  <div class="modal-box">
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:16px">Motif de refus</div>
+    <div class="field-block">
+      <label class="form-label">Expliquez le motif (facultatif)</label>
+      <textarea [(ngModel)]="rejectReason" class="form-input" rows="4" placeholder="Ex: Revenus insuffisants, dossier incomplet..."></textarea>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-ghost" (click)="showRejectModal=false">Annuler</button>
+      <button class="btn btn-danger" (click)="confirmReject()">Confirmer le refus</button>
+    </div>
+  </div>
+</div>

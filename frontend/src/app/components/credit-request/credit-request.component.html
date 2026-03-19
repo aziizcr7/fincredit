@@ -1,0 +1,118 @@
+<div class="page-header">
+  <div>
+    <div class="page-title">Demande de <span>crédit</span></div>
+    <div class="page-sub">Remplissez le formulaire pour soumettre votre demande</div>
+  </div>
+</div>
+
+<!-- SUCCESS STATE -->
+<div class="success-card" *ngIf="success">
+  <div class="success-icon">✅</div>
+  <div class="success-title">Demande soumise avec succès !</div>
+  <div class="success-sub">Votre demande est en cours d'examen. Vous serez notifié dès qu'une décision sera prise.</div>
+  <div style="display:flex;gap:12px;justify-content:center;margin-top:20px">
+    <a routerLink="/my-credits" class="btn btn-primary">Voir mes demandes</a>
+    <a routerLink="/dashboard" class="btn btn-ghost">Dashboard</a>
+  </div>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!success">
+  <div class="form-error" *ngIf="errorMsg">⚠ {{ errorMsg }}</div>
+
+  <div class="two-col">
+    <!-- COL 1: Infos personnelles -->
+    <div class="card">
+      <div class="card-title"><div class="card-dot"></div>Informations professionnelles</div>
+      <div class="field-block">
+        <label class="form-label">Profession *</label>
+        <select formControlName="profession" class="form-input">
+          <option value="">Sélectionner...</option>
+          <option>Salarié secteur privé</option>
+          <option>Fonctionnaire</option>
+          <option>Indépendant / Freelance</option>
+          <option>Chef d'entreprise</option>
+          <option>Retraité</option>
+        </select>
+      </div>
+      <div class="field-block">
+        <label class="form-label">Revenu mensuel net (TND) *</label>
+        <input formControlName="income" type="number" class="form-input" placeholder="Ex: 3500">
+      </div>
+      <div class="info-box">
+        <div class="info-icon">💡</div>
+        <div class="info-text">Le montant maximal accordé est généralement de 40% de votre revenu mensuel multiplié par la durée.</div>
+      </div>
+    </div>
+
+    <!-- COL 2: Détails crédit -->
+    <div class="card">
+      <div class="card-title"><div class="card-dot"></div>Détails du crédit demandé</div>
+      <div class="field-block">
+        <label class="form-label">Type de crédit *</label>
+        <select formControlName="credit_type" class="form-input">
+          <option>Immobilier</option>
+          <option>Auto</option>
+          <option>Personnel</option>
+          <option>Professionnel</option>
+        </select>
+      </div>
+      <div class="field-block">
+        <label class="form-label">Montant demandé (TND) *</label>
+        <input formControlName="amount" type="number" class="form-input" placeholder="Ex: 50000">
+      </div>
+      <div class="field-block">
+        <label class="form-label">Durée souhaitée *</label>
+        <select formControlName="duration_months" class="form-input">
+          <option value="12">12 mois (1 an)</option>
+          <option value="24">24 mois (2 ans)</option>
+          <option value="36">36 mois (3 ans)</option>
+          <option value="48">48 mois (4 ans)</option>
+          <option value="60">60 mois (5 ans)</option>
+          <option value="84">84 mois (7 ans)</option>
+          <option value="120">120 mois (10 ans)</option>
+          <option value="180">180 mois (15 ans)</option>
+          <option value="240">240 mois (20 ans)</option>
+        </select>
+      </div>
+      <div class="field-block">
+        <label class="form-label">Objet du crédit</label>
+        <textarea formControlName="purpose" class="form-input" rows="3" placeholder="Décrivez brièvement l'utilisation du crédit..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPLOAD DOCUMENTS -->
+  <div class="card mb-20">
+    <div class="card-title"><div class="card-dot"></div>Documents requis</div>
+    <div class="docs-hint">Joignez : CIN (recto/verso), 3 derniers bulletins de salaire, relevé bancaire 3 mois</div>
+
+    <div class="upload-zone"
+         [class.drag-over]="dragOver"
+         (dragover)="$event.preventDefault(); dragOver=true"
+         (dragleave)="dragOver=false"
+         (drop)="onFileDrop($event)"
+         (click)="fileInput.click()">
+      <input #fileInput type="file" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none" (change)="onFileSelect($event)">
+      <div class="upload-icon">📎</div>
+      <div class="upload-text">Glissez vos fichiers ici ou <strong>cliquez pour sélectionner</strong></div>
+      <div style="font-size:12px;color:var(--silver);margin-top:4px">PDF, JPG, PNG — max 5 Mo par fichier — max 5 fichiers</div>
+    </div>
+
+    <div class="files-list" *ngIf="files.length > 0">
+      <div class="file-item" *ngFor="let f of files; let i = index">
+        <span class="file-icon">📄</span>
+        <span class="file-name">{{ f.name }}</span>
+        <span class="file-size">{{ (f.size/1024).toFixed(0) }} Ko</span>
+        <button type="button" (click)="removeFile(i)" class="file-remove">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:flex-end;gap:12px">
+    <a routerLink="/dashboard" class="btn btn-ghost">Annuler</a>
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading">
+      <span *ngIf="!loading">📤 Envoyer la demande</span>
+      <span *ngIf="loading">Envoi en cours...</span>
+    </button>
+  </div>
+</form>

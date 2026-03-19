@@ -1,0 +1,22 @@
+.filters-bar { display: flex; gap: 12px; margin-bottom: 18px; }
+.search-input { max-width: 320px; }
+.select-filter { max-width: 200px; }
+.field-block { margin-bottom: 12px; }
+
+.req-row {
+  display: grid; grid-template-columns: 100px 1fr 100px 160px 130px 100px 70px 110px auto;
+  align-items: center; gap: 12px;
+  padding: 14px 0; border-bottom: 1px solid rgba(27,79,216,0.06);
+  &:last-child { border-bottom: none; }
+  &:hover { background: rgba(27,79,216,0.03); margin: 0 -24px; padding: 14px 24px; }
+}
+.req-ref   { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; color: var(--silver); }
+.req-name  { font-weight: 500; font-size: 13px; }
+.req-email { font-size: 12px; color: var(--silver); }
+.req-type  { font-size: 13px; color: var(--silver-lt); }
+.req-actions { display: flex; gap: 6px; }
+.btn-sm { padding: 6px 12px !important; font-size: 12px !important; }
+
+.pagination { display: flex; align-items: center; justify-content: center; gap: 16px; padding-top: 16px; margin-top: 12px; border-top: 1px solid var(--border); }
+
+@media (max-width: 1300px) { .req-row { grid-template-columns: 100px 1fr 120px 120px auto auto; } .req-type, .req-monthly, .req-date, .req-score { display: none; } }

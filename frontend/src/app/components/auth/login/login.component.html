@@ -1,0 +1,97 @@
+<div class="auth-page">
+
+  <div class="auth-bg">
+    <div class="bg-orb orb1"></div>
+    <div class="bg-orb orb2"></div>
+  </div>
+
+  <div class="auth-card">
+
+    <div class="brand">
+      <div class="brand-mark">FC</div>
+      <span class="brand-name">Fin<em>Credit</em> Pro</span>
+    </div>
+
+    <h1>Connexion</h1>
+    <p class="sub">Accédez à votre espace bancaire sécurisé</p>
+
+    <div class="err" *ngIf="errorMsg">
+      ⚠ {{ errorMsg }}
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <div class="fg">
+        <label>Email</label>
+        <input 
+          formControlName="email"
+          type="email"
+          placeholder="votre&#64;email.com"
+        >
+      </div>
+
+      <div class="fg">
+        <label>Mot de passe</label>
+
+        <div style="position:relative">
+
+          <input
+            formControlName="password"
+            [type]="showPass ? 'text' : 'password'"
+            placeholder="••••••••"
+          >
+
+          <button
+            type="button"
+            style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--silver)"
+            (click)="showPass = !showPass"
+          >
+            {{ showPass ? '🙈' : '👁' }}
+          </button>
+
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="submit-btn"
+        [disabled]="form.invalid || loading"
+      >
+
+        <span *ngIf="!loading">
+          Se connecter →
+        </span>
+
+        <span
+          class="spin"
+          *ngIf="loading"
+        ></span>
+
+      </button>
+
+    </form>
+
+    <div class="demo-accounts">
+
+      <div class="demo-title">
+        Comptes de test
+      </div>
+
+      <div>
+        <code>admin&#64;fincredit.tn</code> / <code>admin123</code>
+      </div>
+
+      <div>
+        <code>client&#64;test.tn</code> / <code>client123</code>
+      </div>
+
+    </div>
+
+    <p class="switch">
+      Pas encore de compte ?
+      <a routerLink="/register">S'inscrire</a>
+    </p>
+
+  </div>
+
+</div>

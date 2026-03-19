@@ -1,0 +1,74 @@
+<div class="page-header">
+  <div>
+    <div class="page-title">Mes <span>crédits</span></div>
+    <div class="page-sub">Historique de vos demandes et crédits actifs</div>
+  </div>
+</div>
+
+<div class="tabs-bar">
+  <button class="tab-btn" [class.active]="activeTab==='requests'" (click)="activeTab='requests'">📋 Demandes ({{ requests.length }})</button>
+  <button class="tab-btn" [class.active]="activeTab==='credits'"  (click)="activeTab='credits'">💳 Crédits actifs ({{ credits.length }})</button>
+</div>
+
+<div *ngIf="loading" class="loading-wrap"><div class="spinner-lg"></div></div>
+
+<!-- REQUESTS TAB -->
+<div class="card" *ngIf="!loading && activeTab === 'requests'">
+  <div *ngIf="requests.length === 0" style="text-align:center;padding:40px;color:var(--silver)">
+    Aucune demande soumise. <a routerLink="/request" style="color:var(--cyan)">Faire une demande →</a>
+  </div>
+  <table class="data-table" *ngIf="requests.length > 0">
+    <thead>
+      <tr><th>Référence</th><th>Type</th><th>Montant</th><th>Durée</th><th>Mensualité</th><th>Date</th><th>Statut</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of requests">
+        <td style="font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:var(--silver)">#{{ r.id.substring(0,8).toUpperCase() }}</td>
+        <td>{{ r.credit_type }}</td>
+        <td style="font-weight:600;color:var(--white)">{{ r.amount | number:'1.0-0' }} TND</td>
+        <td>{{ r.duration_months }} mois</td>
+        <td style="color:var(--cyan)">{{ r.monthly_payment | number:'1.0-0' }} TND</td>
+        <td style="color:var(--silver)">{{ r.request_date | date:'dd/MM/yyyy' }}</td>
+        <td>
+          <span class="badge" [ngClass]="'badge-'+r.status">
+            <span class="dot"></span>{{ statusLabel(r.status) }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PAGINATION -->
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button (click)="setPage(currentPage-1)" [disabled]="currentPage===1">← Précédent</button>
+    <span>Page {{ currentPage }} / {{ totalPages }}</span>
+    <button (click)="setPage(currentPage+1)" [disabled]="currentPage===totalPages">Suivant →</button>
+  </div>
+</div>
+
+<!-- CREDITS TAB -->
+<div *ngIf="!loading && activeTab === 'credits'">
+  <div class="card" *ngIf="credits.length === 0" style="text-align:center;padding:40px">
+    <div style="font-size:14px;color:var(--silver)">Aucun crédit actif.</div>
+  </div>
+  <div class="credit-card" *ngFor="let c of credits">
+    <div class="cc-header">
+      <div class="cc-type">{{ c.credit_type === 'Immobilier' ? '🏠' : c.credit_type === 'Auto' ? '🚗' : '💼' }} Crédit {{ c.credit_type }}</div>
+      <span class="badge badge-approved"><span class="dot"></span>Actif</span>
+    </div>
+    <div class="cc-body">
+      <div class="cc-stat"><div class="cc-stat-label">Montant</div><div class="cc-stat-val">{{ c.amount | number:'1.0-0' }} TND</div></div>
+      <div class="cc-stat"><div class="cc-stat-label">Durée</div><div class="cc-stat-val">{{ c.duration_months }} mois</div></div>
+      <div class="cc-stat"><div class="cc-stat-label">Taux</div><div class="cc-stat-val">{{ c.interest_rate }}%</div></div>
+      <div class="cc-stat"><div class="cc-stat-label">Mensualité</div><div class="cc-stat-val" style="color:var(--cyan)">{{ c.monthly_payment | number:'1.0-0' }} TND</div></div>
+      <div class="cc-stat"><div class="cc-stat-label">Restant dû</div><div class="cc-stat-val">{{ c.remaining_amount | number:'1.0-0' }} TND</div></div>
+      <div class="cc-stat"><div class="cc-stat-label">Fin le</div><div class="cc-stat-val">{{ c.end_date | date:'dd/MM/yyyy' }}</div></div>
+    </div>
+    <div class="cc-progress">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;color:var(--silver)">
+        <span>Progression du remboursement</span><span>{{ progressPct(c) }}%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" [style.width.%]="progressPct(c)"></div></div>
+    </div>
+  </div>
+</div>
